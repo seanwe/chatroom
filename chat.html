@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Chat Room</title>
+</head>
+<body>
+    <form id="usernameForm">
+        <input type="text" id="usernameInput" placeholder="Enter your name">
+        <button type="submit">Accept</button>
+    </form>
+
+  <div id="chatRoom"></div>
+
+  <form id="messageForm">
+    <input type="text" id="messageInput" placeholder="Type your message here">
+    <button type="submit">Send</button>
+  </form>
+
+  <script src="chatapi.js"></script>
+  <script>
+    // style
+    document.getElementById('usernameForm').style.display = 'block';
+    document.getElementById('chatRoom').style.display = 'none';
+    document.getElementById('messageForm').style.display = 'none';
+
+    let user
+    let chatRoom
+
+     // Add a callback to the account creation
+     document.getElementById('usernameForm').addEventListener('submit', function(e) {
+        // Prevent the form from being submitted normally
+        e.preventDefault();
+
+        // Get the user's input
+        let username = document.getElementById('usernameInput').value;
+
+        // Clear the input
+        document.getElementById('usernameInput').value = '';
+
+        // Create user
+        user = new User(username);
+        chatRoom = new ChatRoom();
+        chatRoom.addUserToChat(user);
+
+        // style
+        document.getElementById('usernameForm').style.display = 'none';
+        document.getElementById('chatRoom').style.display = 'block';
+        document.getElementById('messageForm').style.display = 'block';
+    });
+
+    // Add a callback to the form submission
+    document.getElementById('messageForm').addEventListener('submit', function(e) {
+        // Prevent the form from being submitted normally
+        e.preventDefault();
+
+        // Get the user's input
+        let message = document.getElementById('messageInput').value;
+
+        // Clear the input
+        document.getElementById('messageInput').value = '';
+
+        // Send the message
+        chatRoom.sendMessage(user, message);
+    });
+
+    // Redefine the publish method to update the HTML
+    ChatRoom.prototype.publish = function(user, message) {
+      let chatRoomDiv = document.getElementById('chatRoom');
+
+      let messageDiv = document.createElement('div');
+      messageDiv.textContent = `${user.name} said ${message}`;
+
+      chatRoomDiv.appendChild(messageDiv);
+    }
+  </script>
+</body>
+</html>
